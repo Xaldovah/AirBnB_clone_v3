@@ -22,13 +22,6 @@ def get_state_cities(state_id):
 
 
 @app_views.route("/cities/<city_id>", strict_slashes=False, methods=['GET'])
-    cities = []
-    for city in state.cities:
-        cities.append(city.to_dict())
-    return jsonify(cities)
-
-
-@app_views.route("/cities/<city_id>", strict_slashes=False, methods=['GET'])
 def get_city_by_id(city_id):
     """Retrieves a City object"""
     city = storage.get(City, city_id)
@@ -56,18 +49,6 @@ def create_city(state_id):
     state = storage.get(State, state_id)
     if state is None:
         abort(404)
-    if not request.get_json():
-        return make_response(jsonify({'error': 'Not a JSON'}), 400)
-    data = request.get_json()
-    if data.get('name', None) is None:
-        return make_response(jsonify({'error': 'Missing name'}), 400)
-    city = City(**data)
-    city.state_id = state.id
-    city.save()
-    return jsonify(city.to_dict()), 201
-
-
-@app_views.route("/cities/<city_id>", methods=['PUT'], strict_slashes=False)
     if not request.get_json():
         return make_response(jsonify({'error': 'Not a JSON'}), 400)
     data = request.get_json()
