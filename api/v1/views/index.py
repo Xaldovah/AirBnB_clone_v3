@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""This mod cretes the status endpoint"""
+"""This mod creates the status endpoint"""
 
 from api.v1.views import app_views
 from flask import jsonify
