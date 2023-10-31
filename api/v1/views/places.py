@@ -13,15 +13,14 @@ from models.state import State
 
 @app_views.route("cities/<city_id>/places", strict_slashes=False,
                  methods=['GET'])
-def get_place(city_id=None):
+def get_place(city_id):
     """Retrieves the list of all State objects"""
     city = storage.get(City, city_id)
     if city is None:
         abort(404)
-    cities = []
-    for ct in city.places:
-        cities.append(item.to_dict())
-    return jsonify(cities)
+
+    places = [place.to_dict() for place in city.places]
+    return jsonify(places)
 
 
 @app_views.route("/places/<place_id>", strict_slashes=False,
@@ -31,9 +30,9 @@ def delete_place(place_id):
     places = storage.get(Place, place_id)
     if places is None:
         abort(404)
-    places.delete()
+    places.delete(place)
     storage.save()
-    return jsonify({}), 200
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route("/places/<place_id>", strict_slashes=False, methods=['GET'])
@@ -66,7 +65,7 @@ def create_place():
     place = Place(**data)
     place.city_id = city_id
     place.save()
-    return jsonify(place.to_dict()), 201
+    return make_response(jsonify(place.to_dict()), 201)
 
 
 @app_views.route("/cities/<city_id>/places", strict_slashes=False,
@@ -82,8 +81,8 @@ def update_place(place_id):
     for key, value in data.items():
         if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
             setattr(place, key, value)
-    place.save()
-    return jsonify(place.to_dict())
+    storage.save()
+    return make_response(jsonify(place.to_dict()), 200)
 
 
 @app_views.route('/places_search', strict_slashes=False, methods=['POST'])
