@@ -1,0 +1,4 @@
+Fabric
+Flask
+flask_cors
+SQLAlchemy
